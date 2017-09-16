@@ -1,0 +1,27 @@
+{
+  "name": "weekend3",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bizzmichelson/weekend3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bizzmichelson/weekend3/issues"
+  },
+  "homepage": "https://github.com/bizzmichelson/weekend3#readme",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4",
+    "jquery": "^3.2.1",
+    "pg": "^7.3.0"
+  }
+}
