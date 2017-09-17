@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,11 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.18.1",
+    "bootstrap": "^3.3.7",
     "express": "^4.15.4",
     "jquery": "^3.2.1",
+    "morgan": "^1.8.2",
+    "nodemon": "^1.12.1",
     "pg": "^7.3.0"
   }
 }
