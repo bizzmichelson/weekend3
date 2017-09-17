@@ -6,6 +6,8 @@ var todoModule = require("./routes/todoModule");
 var morgan = require("morgan");
 var path = require("path");
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(morgan("tiny"));
 
 app.use(express.static(path.resolve(__dirname, "public")));
@@ -19,9 +21,6 @@ app.get("/", function(req, res) {
 app.listen(port, function() {
   console.log("listening on port", port);
 });
-
-// app.use(bodyParser.urlencoded({ extended: true }));
-
 
 // app.get('/tasks', function(req,res) {
 
