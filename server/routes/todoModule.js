@@ -61,12 +61,46 @@ router.post("/", function(req, res) {
           res.sendStatus(500).end();
         } else {
           // if successful respond with a 200 level status code
-          res.sendStatus(202).end();
+          return res.sendStatus(202).end();
         }
       });
     }
   });
 });
+
+router.put("/", function(req, res) {
+  console.log("post body", req.body.complete);
+  var post = req.body.complete;
+  res.sendStatus(200).end();
+
+  // pool.connect
+  pool.connect(function(connectionError, client, done) {
+    // error handling for the connection
+    if (connectionError) {
+      console.log(connectionError);
+      res.sendStatus(500).end();
+    } else {
+      // client.query
+      // parameterized queries
+      // DELETE FROM inventory WHERE id=$1, [dbId]
+      client.query("INSERT INTO todo (complete) VALUES ($1);", [post], function(
+        queryError,
+        result
+      ) {
+        return done();
+        // error handling for the query
+        if (queryError) {
+          console.log(queryError);
+          res.sendStatus(500).end();
+        } else {
+          // if successful respond with a 200 level status code
+          return res.sendStatus(202).end();
+        }
+      });
+    }
+  });
+});
+
 router.get("/", function(req, res) {
   console.log("inside todoModule GET function");
   pool.connect(function(err, client, done) {

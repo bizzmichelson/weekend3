@@ -12,7 +12,7 @@ function getTasks() {
     url: "/todo",
     success: function(res) {
       return taskAppend(res);
-      console.log("in client GET route", res);
+      //console.log("in client GET route", res);
     }
   });
 }
@@ -33,6 +33,12 @@ function taskAppend(data) {
         '<button onclick="deleteItems(' +
         taskItem.id +
         ')">Delete Button </button>' +
+        "</td>" +
+        "<td>" +
+        '<button onclick="completeItems(' +
+        taskItem.id +
+        ')">Complete Button </button>' +
+        //everything from + on is added
         "</td></tr>"
     );
   }
@@ -44,6 +50,17 @@ function deleteItems(id) {
     url: "/todo/" + id,
     success: function(data) {
       console.log("successfully deleted", id);
+      getTasks();
+    }
+  });
+}
+
+function completeItems(id) {
+  $.ajax({
+    type: "PUT",
+    url: "/todo/" + id,
+    sucess: function(data) {
+      console.log("updated", id);
       getTasks();
     }
   });
@@ -67,8 +84,9 @@ function addTasks() {
     url: "/todo",
     data: itemToAdd,
     success: function() {
-      console.log("in client POST route");
-      getTasks();
+      //change background in here? something with td
+      //need something else
+      return getTasks();
     }
   });
 }
