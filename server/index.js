@@ -21,20 +21,3 @@ app.get("/", function(req, res) {
 app.listen(port, function() {
   console.log("listening on port", port);
 });
-
-// app.get('/tasks', function(req,res) {
-
-//   pool.connect(function(connectionError, client, done) {
-//     if (connectionError){
-//       res.sendStatus(500);
-//     } else {
-//       client.query(SELECT * FROM todo, function(queryError, resultsObj) {
-//         if (queryError) {
-//           res.sendStatus(500);
-//         }else {
-//           res.send(resultsObj.rows);
-//         }
-//         }
-//     )
-//   }
-//   })

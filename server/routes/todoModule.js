@@ -54,7 +54,7 @@ router.post("/", function(req, res) {
         queryError,
         result
       ) {
-        done();
+        return done();
         // error handling for the query
         if (queryError) {
           console.log(queryError);
