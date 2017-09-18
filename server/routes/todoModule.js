@@ -2,7 +2,26 @@ var express = require("express");
 var router = express.Router();
 var pool = require("../modules/pool");
 
-router.delete("/:id", function(req, res) {
+router.get("/get", function(req, res) {
+  console.log("inside todoModule GET function");
+  pool.connect(function(err, client, done) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      client.query("SELECT * FROM todo", function(err, resObj) {
+        // done();
+        if (err) {
+          res.sendStatus(500);
+        } else {
+          console.log(resObj.rows);
+          res.send(resObj.rows);
+        }
+      });
+    }
+  });
+});
+
+router.delete("/delete/:id", function(req, res) {
   console.log("in delete inventory route");
   console.log("req.params.id ->", req.params.id);
   var dbId = req.params.id;
@@ -12,7 +31,7 @@ router.delete("/:id", function(req, res) {
     // error handling for the connection
     if (connectionError) {
       console.log(connectionError);
-      res.sendStatus(500).end();
+      res.sendStatus(500);
     } else {
       // client.query
       // parameterized queries
@@ -25,27 +44,27 @@ router.delete("/:id", function(req, res) {
         // error handling for the query
         if (queryError) {
           console.log(queryError);
-          res.sendStatus(500).end();
+          res.sendStatus(500);
         } else {
           // if successful respond with a 200 level status code
-          res.sendStatus(202).end();
+          res.sendStatus(202);
         }
       });
     }
   });
 });
 
-router.post("/", function(req, res) {
+router.post("/add", function(req, res) {
+  console.log(req.body);
   console.log("post body", req.body.task);
   var post = req.body.task;
-  res.sendStatus(200).end();
 
   // pool.connect
   pool.connect(function(connectionError, client, done) {
     // error handling for the connection
     if (connectionError) {
       console.log(connectionError);
-      res.sendStatus(500).end();
+      res.sendStatus(500);
     } else {
       // client.query
       // parameterized queries
@@ -54,67 +73,49 @@ router.post("/", function(req, res) {
         queryError,
         result
       ) {
-        return done();
+        done();
         // error handling for the query
         if (queryError) {
           console.log(queryError);
-          res.sendStatus(500).end();
+          res.sendStatus(500);
         } else {
           // if successful respond with a 200 level status code
-          return res.sendStatus(202).end();
+          res.sendStatus(200);
         }
       });
     }
   });
 });
 
-router.put("/", function(req, res) {
+router.put("/update", function(req, res) {
+  console.log("test");
   console.log("post body", req.body.complete);
-  var post = req.body.complete;
-  res.sendStatus(200).end();
+  // var taskState = req.body.complete;
+  // var taskCompleted = req.params.id;
+  // res.sendStatus(200);
 
-  // pool.connect
   pool.connect(function(connectionError, client, done) {
     // error handling for the connection
     if (connectionError) {
       console.log(connectionError);
-      res.sendStatus(500).end();
+      res.sendStatus(500);
     } else {
-      // client.query
-      // parameterized queries
-      // DELETE FROM inventory WHERE id=$1, [dbId]
-      client.query("INSERT INTO todo (complete) VALUES ($1);", [post], function(
-        queryError,
-        result
-      ) {
-        return done();
-        // error handling for the query
-        if (queryError) {
-          console.log(queryError);
-          res.sendStatus(500).end();
-        } else {
-          // if successful respond with a 200 level status code
-          return res.sendStatus(202).end();
+      client.query(
+        "UPDATE todo SET complete = $1 WHERE id = $2",
+        [req.body.complete, req.body.id],
+        function(queryError, result) {
+          done();
+          // error handling for the query
+          if (queryError) {
+            console.log(queryError);
+            res.sendStatus(500);
+          } else {
+            // if successful respond with a 200 level status code
+            console.log("success??");
+            res.sendStatus(202);
+          }
         }
-      });
-    }
-  });
-});
-
-router.get("/", function(req, res) {
-  console.log("inside todoModule GET function");
-  pool.connect(function(err, client, done) {
-    if (err) {
-      res.sendStatus(500).end();
-    } else {
-      client.query("SELECT * FROM todo", function(err, resObj) {
-        // done();
-        if (err) {
-          res.sendStatus(500).end();
-        } else {
-          res.send(resObj.rows).end();
-        }
-      });
+      );
     }
   });
 });

@@ -5,14 +5,15 @@ function onReady() {
   getTasks();
   $("#addButton").on("click", addTasks);
 }
-
+var tasks = [];
 function getTasks() {
-  return $.ajax({
+  $.ajax({
     type: "GET",
-    url: "/todo",
+    url: "/todo/get",
     success: function(res) {
-      return taskAppend(res);
+      taskAppend(res);
       //console.log("in client GET route", res);
+      tasks = res;
     }
   });
 }
@@ -24,44 +25,66 @@ function taskAppend(data) {
     var taskItem = data[i];
 
     $("#taskTable").append(
-      '<tr data-todoid="' +
-        taskItem.id +
-        '"><td>' +
-        taskItem.task +
-        "</td>" +
-        "<td>" +
-        '<button onclick="deleteItems(' +
-        taskItem.id +
-        ')">Delete Button </button>' +
-        "</td>" +
-        "<td>" +
-        '<button onclick="completeItems(' +
-        taskItem.id +
-        ')">Complete Button </button>' +
-        //everything from + on is added
-        "</td></tr>"
+      '<tr id="task-' + taskItem.id + 
+          '" ><td>' +
+          taskItem.task +
+          "</td>" +
+          "<td>" +
+          '<button onclick="deleteItems(' +
+          taskItem.id +
+          ')">Delete Button </button>' +
+          "</td>" +
+          "<td>" +
+          '<button onclick="completeItems(' +
+          taskItem.id +
+          ')">Complete Button </button>' +
+          //everything from + on is added
+          "</td></tr>"
     );
+    if (taskItem.complete) {
+      $("#task-" + taskItem.id).addClass("completed");
+    }
   }
 }
 
-function deleteItems(id) {
-  $.ajax({
-    type: "DELETE",
-    url: "/todo/" + id,
-    success: function(data) {
-      console.log("successfully deleted", id);
-      getTasks();
-    }
-  });
+function deleteItems(id) { 
+  var sure = confirm("are you sure?");
+  if(sure) {
+    $.ajax({
+      type: "DELETE",
+      url: "/todo/delete/" + id,
+      success: function(data) {
+        console.log("successfully deleted", id);
+        getTasks();
+      }
+    });
+  }else{
+    return;
+  }
 }
 
 function completeItems(id) {
+  var updatedItem;
+  for (var i = 0; i < tasks.length; i++) {
+    var taskItem = tasks[i];
+    if (taskItem.id === id) {
+      updatedItem = taskItem;
+      break;
+    }
+  }
+  updatedItem.complete = !updatedItem.complete;
+
   $.ajax({
     type: "PUT",
-    url: "/todo/" + id,
-    sucess: function(data) {
-      console.log("updated", id);
-      getTasks();
+    url: "/todo/update",
+    data: updatedItem,
+    success: function(data) {
+      console.log("updated");
+      if (updatedItem.complete) {
+        $("#task-" + id).addClass("completed");
+      } else {
+        $("#task-" + id).removeClass("completed");
+      }
     }
   });
 }
@@ -81,7 +104,7 @@ function addTasks() {
 
   $.ajax({
     type: "POST",
-    url: "/todo",
+    url: "/todo/add",
     data: itemToAdd,
     success: function() {
       //change background in here? something with td

@@ -1,3 +1,6 @@
 #taskTable {
   background-color: gray;
 }
+.completed {
+  background-color: green;
+}
